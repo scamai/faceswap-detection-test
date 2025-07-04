@@ -1,0 +1,449 @@
+{
+	"info": {
+		"_postman_id": "f6c45afc-d029-418e-9eea-5d9210412f90",
+		"name": "Deepfake Detection API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45549102",
+		"_collection_link": "https://yuxin-6807425.postman.co/workspace/Yuxin's-Workspace~01db1a0c-79f6-4e1a-8b36-80e02da06b1a/collection/45549102-f6c45afc-d029-418e-9eea-5d9210412f90?action=share&source=collection_link&creator=45549102"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check status code\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Parse JSON response\r",
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"// Validate 'status' field\r",
+							"pm.test(\"Status is 'healthy'\", function () {\r",
+							"    pm.expect(jsonData.status).to.eql(\"healthy\");\r",
+							"});\r",
+							"\r",
+							"// Validate 'models_loaded' is true\r",
+							"pm.test(\"Models are loaded\", function () {\r",
+							"    pm.expect(jsonData.models_loaded).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{detection_model_url}}/health",
+					"host": [
+						"{{detection_model_url}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Predict Deepfake",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Status should be 200\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Check that blended_fakeness_score > 0.9\r",
+							"pm.test(\"Blended fakeness score > 0.9\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    const score = jsonData.faces[0].blended_fakeness_score;\r",
+							"    pm.expect(score).to.be.above(0.9);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "test123"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "files/output.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{detection_model_url}}/predict",
+					"host": [
+						"{{detection_model_url}}"
+					],
+					"path": [
+						"predict"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Missing Key",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"// No Key is sent\r",
+							"pm.test(\"Status code is 401 - Unauthorized\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.detail).to.eql(\"Unauthorized\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "files/output.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{detection_model_url}}/predict",
+					"host": [
+						"{{detection_model_url}}"
+					],
+					"path": [
+						"predict"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "No file",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 - No file provided\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.detail).to.eql(\"No file provided\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "test123"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{detection_model_url}}/predict",
+					"host": [
+						"{{detection_model_url}}"
+					],
+					"path": [
+						"predict"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid File",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 - Invalid file type\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.detail).to.eql(\"Invalid file type. Please upload an image.\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "test123"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "files/test.txt"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{detection_model_url}}/predict",
+					"host": [
+						"{{detection_model_url}}"
+					],
+					"path": [
+						"predict"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "No Face",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 422 - No face detected\", function () {\r",
+							"    pm.response.to.have.status(422);\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.detail).to.eql(\"No face detected in the image\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "test123"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "files/animal.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{detection_model_url}}/predict",
+					"host": [
+						"{{detection_model_url}}"
+					],
+					"path": [
+						"predict"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Real Image",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Status should be 200\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Check that blended_fakeness_score > 0.9\r",
+							"pm.test(\"Blended fakeness score < 0.2\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    const score = jsonData.faces[0].blended_fakeness_score;\r",
+							"    pm.expect(score).to.be.below(0.2);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "test123"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "files/real.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{detection_model_url}}/predict",
+					"host": [
+						"{{detection_model_url}}"
+					],
+					"path": [
+						"predict"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Wrong Key",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// No Key is sent\r",
+							"pm.test(\"Status code is 401 - Unauthorized\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.detail).to.eql(\"Unauthorized\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "wrongkey"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "files/output.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{detection_model_url}}/predict",
+					"host": [
+						"{{detection_model_url}}"
+					],
+					"path": [
+						"predict"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

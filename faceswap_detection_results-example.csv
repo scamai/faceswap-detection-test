@@ -1,0 +1,11 @@
+filename,source,fakeness_score,correctness,remark
+000073_000074.jpg,DeepLiveCam,0.9795,correct,
+000039_000040.jpg,DeepLiveCam,0.9326,correct,
+000031_000032.jpg,DeepLiveCam,0.8685,correct,
+000077_000078.jpg,DeepLiveCam,0.9061,correct,
+000051_000052.jpg,DeepLiveCam,0.5876,correct,
+000043_000044.jpg,DeepLiveCam,0.8972,correct,
+000009_000010.jpg,DeepLiveCam,0.5455,correct,
+000001_000002.jpg,DeepLiveCam,,test failed,"{""file_name"": ""000001_000002.jpg"", ""faces"": [{""face_index"": 0, ""coordinates"": {""y_min"": 32, ""y_max"": 409, ""x_min"": 0, ""x_max"": 471}, ""gateway_weights"": null, ""expert_predictions"": null, ""blended_fakeness_score"": null}]}"
+000007_000008.jpg,DeepLiveCam,0.8875,correct,
+000069_000070.jpg,DeepLiveCam,0.8996,correct,
