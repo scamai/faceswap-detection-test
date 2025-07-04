@@ -67,9 +67,6 @@ coverage.xml
 # Output files
 faceswap_detection_results.csv
 
-# Sensitive/config files
-config.py
-
 # OS files
 .DS_Store
 Thumbs.db
